@@ -1,0 +1,2 @@
+# cado
+The Cado language.
