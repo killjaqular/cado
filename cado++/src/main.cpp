@@ -13,8 +13,6 @@
 
 using namespace std;
 
-bool ErrorHandling::hadError = false;
-
 int main(int argc, const char* argv[]){
     cout << "Cado in C++" << endl;
     if(argc > 2){
@@ -22,7 +20,8 @@ int main(int argc, const char* argv[]){
         exit(EXIT_FAILURE);
     }else if(argc == 2){
         runFile(argv[1]);
-        if (ErrorHandling::hadError) exit(LEXICAL_ERROR);
+        // Something went wrong, but at this level we don't know for certain
+        if (ErrorHandling::hadError) exit(GENERAL_ERROR);
     }else{
         runPrompt();
     }
