@@ -1,3 +1,4 @@
+#pragma once
 // Standard Library
 #include <iostream>
 
