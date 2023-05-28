@@ -1,17 +1,24 @@
+#pragma once
 // Standard Libraries
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <string>
 
+// Non-Standard Libraries
+#include "errorhandling.cpp"
+#include "run.cpp"
 
 using namespace std;
 
 void runPrompt(){
-    string x;
+    string line;
 
     while(true){
-        // TODO: Read from stdin and interpret the input
-        break;
+        cout << ":_> ";
+        getline(cin, line);
+        if (!line.compare("exit")) break;
+        run(line);
+        ErrorHandling::hadError = false;
     }
 
     return;
