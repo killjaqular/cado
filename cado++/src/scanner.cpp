@@ -52,11 +52,56 @@ private:
             case '<': addToken(match('=') ? LESS_EQUAL : LESS); break;
             case '>': addToken(match('=') ? GREATER_EQUAL : GREATER); break;
 
+            case '/':
+                if (match('/')) {
+                    // A comment goes until the end of the line.
+                    while (peek() != '\n' && !isAtEnd()) advance();
+                }else{
+                    addToken(SLASH);
+                }
+                break;
+
+            // Ignore all whitespace.
+            case ' ':
+            case '\r':
+            case '\t':
+                break;
+
+            case '\n':
+                currentLine++;
+                break;
+
+            case '"': makeString(); break;
+
             default:
                 ErrorHandling::error(currentLine, string("Unexpected character."));
                 cout << "<" << c << ">" << endl;
                 break;
         }
+    }
+
+    void makeString() {
+        while (peek() != '"' && !isAtEnd()) {
+            if (peek() == '\n') currentLine++;
+            advance();
+        }
+
+        if (isAtEnd()) {
+            ErrorHandling::error(currentLine, "Unterminated string.");
+            return;
+        }
+
+        // The closing ".
+        advance();
+
+        // Trim the surrounding quotes.
+        string value = source.substr(tokenStart + 1, currentChar - 1);
+        addToken(STRING, value);
+    }
+
+    char peek() {
+        if (isAtEnd()) return '\0';
+        return source.at(currentChar);
     }
 
     bool match(char expected){
@@ -80,6 +125,11 @@ private:
     }
 
     void addToken(TokenType type, char literal) {
+        string text = source.substr(tokenStart, currentChar);
+        tokens.push_back(Token(type, text, literal, currentLine));
+    }
+
+    void addToken(TokenType type, string literal) {
         string text = source.substr(tokenStart, currentChar);
         tokens.push_back(Token(type, text, literal, currentLine));
     }
