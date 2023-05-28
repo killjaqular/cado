@@ -1,20 +1,28 @@
 /// Standard Libraries
 #include <iostream>
+#include <list>
+#include <string>
 
 #include <stdlib.h>
 
 // Non-Standard Libraries
 #include "../inc/common.h"
+#include "errorhandling.cpp"
 #include "runFile.cpp"
 #include "runPrompt.cpp"
 
+using namespace std;
+
+bool ErrorHandling::hadError = false;
+
 int main(int argc, const char* argv[]){
-    std::cout << "Cado in C++" << std::endl;
+    cout << "Cado in C++" << endl;
     if(argc > 2){
-        std::cout << USAGE << std::endl;
+        cout << USAGE << endl;
         exit(EXIT_FAILURE);
     }else if(argc == 2){
         runFile(argv[1]);
+        if (ErrorHandling::hadError) exit(LEXICAL_ERROR);
     }else{
         runPrompt();
     }
