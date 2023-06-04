@@ -16,6 +16,7 @@ using namespace std;
 class Object {
 public:
     virtual string toString() const = 0;
+    virtual ~Object() {}
 };
 
 class plain : public Object {
@@ -30,6 +31,8 @@ public:
     string toString() const override {
         return this->literal;
     }
+
+    ~plain(){}
 };
 
 class boolean : public Object {
@@ -44,6 +47,8 @@ public:
     string toString() const override {
         return this->literal;
     }
+
+    ~boolean(){}
 };
 
 class integer : public Object {
@@ -63,6 +68,8 @@ public:
     string toString() const override {
         return this->literal;
     }
+
+    ~integer(){}
 };
 
 class decimal : public Object {
@@ -83,6 +90,8 @@ public:
     string toString() const override {
         return this->literal;
     }
+
+    ~decimal(){}
 };
 
 class cadostring : public Object {
@@ -97,6 +106,8 @@ public:
     string toString() const override {
         return this->literal;
     }
+
+    ~cadostring(){}
 };
 
 class nil : public Object {
@@ -111,4 +122,6 @@ public:
     string toString() const override {
         return this->literal;
     }
+
+    ~nil(){}
 };

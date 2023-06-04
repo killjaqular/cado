@@ -23,7 +23,6 @@ public:
         }
 
         tokens.push_back(Token(_EOF, string("EOF"), new plain(string("")), currentLine));
-        cout << "Finished scanning all tokens!" << endl;
         return tokens;
     };
 
@@ -36,7 +35,6 @@ private:
 
     void scanToken(){
         char c = advance();
-        cout << "c=<" << c << ">" << endl;
         switch (c) {
             case '(' :addToken(LEFT_PAREN, c); break;
             case ')' :addToken(RIGHT_PAREN, c); break;
@@ -149,19 +147,16 @@ private:
     }
 
     void addToken(TokenType type) {
-        cout << "TokenType=<" << enumToString(type) << ">" << endl;
         addToken(type, 0);
     }
 
     void addToken(TokenType type, char literal) {
-        cout << "TokenType=<" << enumToString(type) << ">, " << "char literal=<" << literal << ">" << endl;
-        Object* object = new plain(string(&literal));
+        Object* object = new plain(string(1, literal));
         string text = source.substr(tokenStart, currentChar);
         tokens.push_back(Token(type, text, object, currentLine));
     }
 
     void addToken(TokenType type, string literal) {
-        cout << "TokenType=<" << enumToString(type) << ">, " << "char literal=<" << literal << ">" << endl;
         Object* object = new cadostring(literal);
         string text = source.substr(tokenStart, currentChar);
         tokens.push_back(Token(type, text, object, currentLine));

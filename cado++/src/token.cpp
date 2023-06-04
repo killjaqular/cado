@@ -1,5 +1,6 @@
 #pragma once
 // Standard Libraries
+#include <memory>
 #include <ostream>
 #include <string>
 
@@ -72,16 +73,19 @@ string enumToString(TokenType token){
 class Token{
     TokenType type;
     string lexeme;
-    Object* literal;
+    shared_ptr<Object> literal;
     size_t line; 
 
 public:
-    Token(TokenType type, string lexeme, Object* literal, size_t line){
-        this->type = type;
-        this->lexeme = lexeme;
-        this->literal = literal;
-        this->line = line;
-    }
+    Token(TokenType type, string lexeme, Object* literal, size_t line) : 
+          type(type), lexeme(lexeme), literal(std::move(literal)), line(line) {}
+
+    // Copy constructor
+    Token(const Token& other) :
+          type(other.type),
+          lexeme(other.lexeme),
+          literal(other.literal),
+          line(other.line) {}
 
     string toString(){
         return this->literal->toString();
