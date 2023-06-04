@@ -14,8 +14,9 @@ void run(string& inputStream){
     list<Token> tokens = scanner.scanTokens();
 
     for (Token token : tokens){
-        // cout << token; // TODO: override the << operator in class Token
+        cout << token.toString();
     }
+    cout << endl;
 
     return;
 }

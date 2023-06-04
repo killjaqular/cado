@@ -22,7 +22,8 @@ public:
             scanToken();
         }
 
-        tokens.push_back(Token(_EOF, string(""), (char)0, currentLine));
+        tokens.push_back(Token(_EOF, string("EOF"), new plain(string("")), currentLine));
+        cout << "Finished scanning all tokens!" << endl;
         return tokens;
     };
 
@@ -35,29 +36,58 @@ private:
 
     void scanToken(){
         char c = advance();
+        cout << "c=<" << c << ">" << endl;
         switch (c) {
-            case '(' :addToken(LEFT_PAREN); break;
-            case ')' :addToken(RIGHT_PAREN); break;
-            case '{' :addToken(LEFT_BRACE); break;
-            case '}' :addToken(RIGHT_BRACE); break;
-            case ',' :addToken(COMMA); break;
-            case '.' :addToken(DOT); break;
-            case '-' :addToken(MINUS); break;
-            case '+' :addToken(PLUS); break;
-            case ';' :addToken(SEMICOLON); break;
-            case '*' :addToken(STAR); break;
+            case '(' :addToken(LEFT_PAREN, c); break;
+            case ')' :addToken(RIGHT_PAREN, c); break;
+            case '{' :addToken(LEFT_BRACE, c); break;
+            case '}' :addToken(RIGHT_BRACE, c); break;
+            case ',' :addToken(COMMA, c); break;
+            case '.' :addToken(DOT, c); break;
+            case '-' :addToken(MINUS, c); break;
+            case '+' :addToken(PLUS, c); break;
+            case ';' :addToken(SEMICOLON, c); break;
+            case '*' :addToken(STAR, c); break;
 
-            case '!': addToken(match('=') ? BANG_EQUAL : BANG); break;
-            case '=': addToken(match('=') ? EQUAL_EQUAL : EQUAL); break;
-            case '<': addToken(match('=') ? LESS_EQUAL : LESS); break;
-            case '>': addToken(match('=') ? GREATER_EQUAL : GREATER); break;
+            case '!': {
+                if (match('=')) {
+                    addToken(BANG_EQUAL, "!=");
+                }else{
+                    addToken(BANG, c);
+                }
+                break;
+            }
+            case '=': {
+                if (match('=')) {
+                    addToken(EQUAL_EQUAL, "==");
+                }else{
+                    addToken(EQUAL, c);
+                }
+                break;
+            }
+            case '<': {
+                if (match('=')) {
+                    addToken(LESS_EQUAL, "<=");
+                }else{
+                    addToken(LESS, c);
+                }
+                break;
+            }
+            case '>': {
+                if (match('=')) {
+                    addToken(GREATER_EQUAL, ">=");
+                }else{
+                    addToken(GREATER, c);
+                }
+                break;
+            }
 
             case '/':
                 if (match('/')) {
                     // A comment goes until the end of the line.
                     while (peek() != '\n' && !isAtEnd()) advance();
                 }else{
-                    addToken(SLASH);
+                    addToken(SLASH, c);
                 }
                 break;
 
@@ -67,9 +97,7 @@ private:
             case '\t':
                 break;
 
-            case '\n':
-                currentLine++;
-                break;
+            case '\n': currentLine++; break;
 
             case '"': makeString(); break;
 
@@ -121,16 +149,21 @@ private:
     }
 
     void addToken(TokenType type) {
+        cout << "TokenType=<" << enumToString(type) << ">" << endl;
         addToken(type, 0);
     }
 
     void addToken(TokenType type, char literal) {
+        cout << "TokenType=<" << enumToString(type) << ">, " << "char literal=<" << literal << ">" << endl;
+        Object* object = new plain(string(&literal));
         string text = source.substr(tokenStart, currentChar);
-        tokens.push_back(Token(type, text, literal, currentLine));
+        tokens.push_back(Token(type, text, object, currentLine));
     }
 
     void addToken(TokenType type, string literal) {
+        cout << "TokenType=<" << enumToString(type) << ">, " << "char literal=<" << literal << ">" << endl;
+        Object* object = new cadostring(literal);
         string text = source.substr(tokenStart, currentChar);
-        tokens.push_back(Token(type, text, literal, currentLine));
+        tokens.push_back(Token(type, text, object, currentLine));
     }
 };
